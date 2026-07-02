@@ -1,1 +1,2 @@
-# 3dsos-web
+# 3DSOS - 3D Printing Resources
+Coming soon
