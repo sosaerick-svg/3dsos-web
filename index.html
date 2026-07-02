@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3DSOS – 3D Printing Help, Guides & Gear</title>
+  <meta name="description" content="3D printing guides, troubleshooting help, and the best gear picks. Recurso completo para impresión 3D en español e inglés." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* ── TOKENS ── */
+    :root {
+      --bg:        #0D0F12;
+      --surface:   #161A20;
+      --surface2:  #1E2329;
+      --border:    #2A2F38;
+      --accent:    #00E5A0;
+      --accent2:   #0070F3;
+      --warn:      #FF6B35;
+      --text:      #E8EBF0;
+      --muted:     #8892A0;
+      --faint:     #4A5260;
+      --font-head: 'Space Grotesk', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --radius:    10px;
+      --radius-lg: 16px;
+    }
+
+    /* ── RESET ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font-body); font-size: 16px; line-height: 1.6; }
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+
+    /* ── LANG TOGGLE ── */
+    .lang-en [data-es], .lang-es [data-en] { display: none !important; }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(13,15,18,0.92); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 clamp(1rem, 4vw, 3rem); height: 60px;
+    }
+    .nav-logo { font-family: var(--font-head); font-size: 1.2rem; font-weight: 700; letter-spacing: -0.5px; }
+    .nav-logo span { color: var(--accent); }
+    .nav-links { display: flex; gap: 1.5rem; align-items: center; }
+    .nav-links a { font-size: 0.875rem; color: var(--muted); transition: color 0.15s; }
+    .nav-links a:hover { color: var(--text); }
+    .lang-btn {
+      font-family: var(--font-mono); font-size: 0.75rem; font-weight: 500;
+      padding: 5px 12px; border-radius: 20px; cursor: pointer;
+      border: 1px solid var(--border); background: var(--surface2);
+      color: var(--accent); transition: background 0.15s;
+    }
+    .lang-btn:hover { background: var(--surface); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 88vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: clamp(3rem, 8vw, 6rem) clamp(1rem, 4vw, 3rem);
+      text-align: center; position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(0,229,160,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-eyebrow {
+      font-family: var(--font-mono); font-size: 0.75rem; font-weight: 500;
+      color: var(--accent); letter-spacing: 0.1em; text-transform: uppercase;
+      margin-bottom: 1.25rem;
+    }
+    .hero h1 {
+      font-family: var(--font-head); font-size: clamp(2.5rem, 7vw, 5.5rem);
+      font-weight: 700; line-height: 1.05; letter-spacing: -2px;
+      max-width: 14ch; margin: 0 auto 1.5rem;
+    }
+    .hero h1 em { font-style: normal; color: var(--accent); }
+    .hero-sub {
+      font-size: clamp(1rem, 2vw, 1.2rem); color: var(--muted);
+      max-width: 52ch; margin: 0 auto 2.5rem; line-height: 1.7;
+    }
+    .hero-ctas { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+    .btn-primary {
+      padding: 13px 28px; border-radius: var(--radius); font-weight: 600; font-size: 0.95rem;
+      background: var(--accent); color: #0D0F12; cursor: pointer; border: none;
+      transition: opacity 0.15s, transform 0.15s;
+    }
+    .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+    .btn-ghost {
+      padding: 13px 28px; border-radius: var(--radius); font-weight: 500; font-size: 0.95rem;
+      background: transparent; color: var(--text); cursor: pointer;
+      border: 1px solid var(--border); transition: border-color 0.15s;
+    }
+    .btn-ghost:hover { border-color: var(--muted); }
+
+    /* ── STATS BAR ── */
+    .stats-bar {
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 0;
+      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .stat {
+      padding: 1.5rem 2.5rem; text-align: center;
+      border-right: 1px solid var(--border); flex: 1; min-width: 140px;
+    }
+    .stat:last-child { border-right: none; }
+    .stat-num { font-family: var(--font-head); font-size: 1.75rem; font-weight: 700; color: var(--accent); }
+    .stat-label { font-size: 0.8rem; color: var(--muted); margin-top: 2px; }
+
+    /* ── SECTIONS ── */
+    section { padding: clamp(3rem, 6vw, 5rem) clamp(1rem, 4vw, 3rem); max-width: 1100px; margin: 0 auto; }
+    .section-label {
+      font-family: var(--font-mono); font-size: 0.72rem; color: var(--accent);
+      text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 0.5rem;
+    }
+    .section-title {
+      font-family: var(--font-head); font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+      font-weight: 700; letter-spacing: -0.5px; margin-bottom: 0.75rem;
+    }
+    .section-sub { color: var(--muted); max-width: 56ch; line-height: 1.7; margin-bottom: 2.5rem; }
+
+    /* ── ARTICLES GRID ── */
+    .articles-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.25rem; }
+    .article-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
+      padding: 1.5rem; transition: border-color 0.15s, transform 0.15s;
+      display: flex; flex-direction: column;
+    }
+    .article-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .article-tag {
+      font-family: var(--font-mono); font-size: 0.7rem; font-weight: 500;
+      padding: 3px 10px; border-radius: 20px; width: fit-content; margin-bottom: 1rem;
+    }
+    .tag-fix  { background: rgba(255,107,53,0.12); color: var(--warn); }
+    .tag-guide { background: rgba(0,229,160,0.10); color: var(--accent); }
+    .tag-review { background: rgba(0,112,243,0.12); color: var(--accent2); }
+    .article-title { font-family: var(--font-head); font-size: 1.05rem; font-weight: 600; margin-bottom: 0.6rem; line-height: 1.3; }
+    .article-excerpt { font-size: 0.875rem; color: var(--muted); line-height: 1.65; flex: 1; }
+    .article-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 1.25rem; }
+    .article-read { font-size: 0.8rem; color: var(--muted); }
+    .article-link {
+      font-size: 0.8rem; font-weight: 600; color: var(--accent);
+      display: flex; align-items: center; gap: 4px;
+    }
+    .article-link::after { content: '→'; }
+
+    /* ── GEAR GRID ── */
+    .gear-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1.25rem; }
+    .gear-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
+      padding: 1.25rem; display: flex; flex-direction: column; gap: 0.75rem;
+      transition: border-color 0.15s;
+    }
+    .gear-card:hover { border-color: var(--faint); }
+    .gear-badge {
+      font-family: var(--font-mono); font-size: 0.68rem; padding: 2px 8px;
+      border-radius: 20px; width: fit-content;
+    }
+    .badge-best { background: rgba(0,229,160,0.12); color: var(--accent); }
+    .badge-budget { background: rgba(255,107,53,0.10); color: var(--warn); }
+    .badge-pro { background: rgba(0,112,243,0.12); color: var(--accent2); }
+    .gear-name { font-family: var(--font-head); font-size: 1rem; font-weight: 600; }
+    .gear-price { font-family: var(--font-mono); font-size: 1.1rem; color: var(--accent); font-weight: 500; }
+    .gear-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.6; flex: 1; }
+    .gear-btn {
+      display: block; text-align: center; padding: 9px;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: var(--radius); font-size: 0.82rem; font-weight: 500;
+      color: var(--text); transition: background 0.15s, border-color 0.15s;
+    }
+    .gear-btn:hover { background: var(--border); border-color: var(--muted); }
+
+    /* ── TROUBLESHOOT ── */
+    .trouble-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
+    .trouble-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 1.25rem; display: flex; gap: 1rem; align-items: flex-start;
+      transition: border-color 0.15s;
+    }
+    .trouble-card:hover { border-color: var(--warn); }
+    .trouble-icon { font-size: 1.5rem; flex-shrink: 0; margin-top: 2px; }
+    .trouble-title { font-family: var(--font-head); font-size: 0.95rem; font-weight: 600; margin-bottom: 0.3rem; }
+    .trouble-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.6; }
+    .trouble-fix { font-size: 0.78rem; color: var(--accent); margin-top: 0.5rem; font-weight: 500; cursor: pointer; }
+
+    /* ── NEWSLETTER ── */
+    .newsletter-wrap {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
+      padding: clamp(2rem, 4vw, 3rem); display: flex; flex-direction: column; align-items: center;
+      text-align: center; position: relative; overflow: hidden;
+    }
+    .newsletter-wrap::before {
+      content: '';
+      position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 300px; height: 1px; background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    }
+    .newsletter-title { font-family: var(--font-head); font-size: clamp(1.4rem, 3vw, 2rem); font-weight: 700; margin-bottom: 0.5rem; }
+    .newsletter-sub { color: var(--muted); margin-bottom: 1.5rem; font-size: 0.95rem; }
+    .newsletter-form { display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center; width: 100%; max-width: 480px; }
+    .newsletter-form input {
+      flex: 1; min-width: 200px; padding: 11px 16px;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: var(--radius); color: var(--text); font-size: 0.9rem;
+      font-family: var(--font-body); outline: none;
+    }
+    .newsletter-form input:focus { border-color: var(--accent); }
+    .newsletter-form input::placeholder { color: var(--faint); }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border); padding: 2rem clamp(1rem, 4vw, 3rem);
+      display: flex; flex-wrap: wrap; gap: 1rem;
+      align-items: center; justify-content: space-between;
+      font-size: 0.82rem; color: var(--muted);
+    }
+    .footer-logo { font-family: var(--font-head); font-weight: 700; font-size: 1rem; }
+    .footer-logo span { color: var(--accent); }
+    .footer-links { display: flex; gap: 1.5rem; }
+    .footer-links a:hover { color: var(--text); }
+    .footer-disclaimer { width: 100%; font-size: 0.75rem; color: var(--faint); line-height: 1.5; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      .nav-links a:not(.lang-btn) { display: none; }
+      .stat { min-width: 120px; padding: 1.25rem 1rem; }
+    }
+
+    /* ── SCROLL REVEAL ── */
+    .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.5s, transform 0.5s; }
+    .reveal.visible { opacity: 1; transform: none; }
+  </style>
+</head>
+
+<body class="lang-en">
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">3D<span>SOS</span></a>
+  <div class="nav-links">
+    <a href="#guides" data-en>Guides</a>
+    <a href="#guides" data-es>Guías</a>
+    <a href="#gear" data-en>Gear</a>
+    <a href="#gear" data-es>Equipo</a>
+    <a href="#fixes" data-en>Fixes</a>
+    <a href="#fixes" data-es>Soluciones</a>
+    <button class="lang-btn" onclick="toggleLang()" id="langBtn">ES</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <p class="hero-eyebrow" data-en>Your 3D printing command center</p>
+  <p class="hero-eyebrow" data-es>Tu centro de comando para impresión 3D</p>
+
+  <h1 data-en>When your print <em>fails</em>, we fix it.</h1>
+  <h1 data-es>Cuando tu impresión <em>falla</em>, nosotros lo resolvemos.</h1>
+
+  <p class="hero-sub" data-en>Guides, gear picks, and real troubleshooting — for beginners who just unboxed their first printer and veterans who've melted a few hot ends.</p>
+  <p class="hero-sub" data-es>Guías, equipo recomendado y soluciones reales — para principiantes que acaban de abrir su primera impresora y veteranos que ya han fundido algún hot end.</p>
+
+  <div class="hero-ctas">
+    <a href="#fixes" class="btn-primary" data-en>Fix my print now</a>
+    <a href="#fixes" class="btn-primary" data-es>Resolver mi impresión</a>
+    <a href="#gear" class="btn-ghost" data-en>Browse gear →</a>
+    <a href="#gear" class="btn-ghost" data-es>Ver equipo →</a>
+  </div>
+</div>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="stat">
+    <div class="stat-num">24+</div>
+    <div class="stat-label" data-en>Guides published</div>
+    <div class="stat-label" data-es>Guías publicadas</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">12</div>
+    <div class="stat-label" data-en>Printers reviewed</div>
+    <div class="stat-label" data-es>Impresoras revisadas</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">ES/EN</div>
+    <div class="stat-label" data-en>Bilingual content</div>
+    <div class="stat-label" data-es>Contenido bilingüe</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">$0</div>
+    <div class="stat-label" data-en>Always free</div>
+    <div class="stat-label" data-es>Siempre gratis</div>
+  </div>
+</div>
+
+<!-- GUIDES -->
+<section id="guides">
+  <p class="section-label" data-en>Guides</p>
+  <p class="section-label" data-es>Guías</p>
+  <h2 class="section-title reveal" data-en>Learn the craft, layer by layer</h2>
+  <h2 class="section-title reveal" data-es>Aprende el oficio, capa por capa</h2>
+  <p class="section-sub reveal" data-en>From first-layer calibration to multi-color prints — practical guides with no filler.</p>
+  <p class="section-sub reveal" data-es>Desde la calibración de la primera capa hasta impresiones multicolor — guías prácticas sin relleno.</p>
+
+  <div class="articles-grid">
+
+    <div class="article-card reveal">
+      <span class="article-tag tag-guide" data-en>Beginner</span>
+      <span class="article-tag tag-guide" data-es>Principiante</span>
+      <h3 class="article-title" data-en>First Layer Calibration: The Only Guide You Need</h3>
+      <h3 class="article-title" data-es>Calibración de Primera Capa: La Guía Definitiva</h3>
+      <p class="article-excerpt" data-en>The first layer is everything. If it's wrong, the rest of the print is wrong. We walk you through bed leveling, Z-offset, and live adjustment so you nail it every time.</p>
+      <p class="article-excerpt" data-es>La primera capa lo es todo. Si falla, todo lo demás falla. Te guiamos por nivelación de cama, Z-offset y ajuste en tiempo real para que lo logres siempre.</p>
+      <div class="article-footer">
+        <span class="article-read" data-en>8 min read</span>
+        <span class="article-read" data-es>8 min lectura</span>
+        <a href="#" class="article-link" data-en>Read</a>
+        <a href="#" class="article-link" data-es>Leer</a>
+      </div>
+    </div>
+
+    <div class="article-card reveal">
+      <span class="article-tag tag-guide">PLA vs PETG vs ABS</span>
+      <h3 class="article-title" data-en>Which Filament Should You Actually Use?</h3>
+      <h3 class="article-title" data-es>¿Qué Filamento Deberías Usar Realmente?</h3>
+      <p class="article-excerpt" data-en>A no-nonsense comparison of the three most common materials: when each shines, when it cracks, and what temperature to run it at.</p>
+      <p class="article-excerpt" data-es>Comparación directa de los tres materiales más comunes: cuándo brilla cada uno, cuándo falla, y a qué temperatura imprimirlo.</p>
+      <div class="article-footer">
+        <span class="article-read" data-en>6 min read</span>
+        <span class="article-read" data-es>6 min lectura</span>
+        <a href="#" class="article-link" data-en>Read</a>
+        <a href="#" class="article-link" data-es>Leer</a>
+      </div>
+    </div>
+
+    <div class="article-card reveal">
+      <span class="article-tag tag-review" data-en>Slicers</span>
+      <span class="article-tag tag-review" data-es>Slicers</span>
+      <h3 class="article-title" data-en>Cura vs OrcaSlicer vs PrusaSlicer in 2025</h3>
+      <h3 class="article-title" data-es>Cura vs OrcaSlicer vs PrusaSlicer en 2025</h3>
+      <p class="article-excerpt" data-en>After slicing the same model in all three, here's what actually matters: profile quality, speed, support generation, and the learning curve.</p>
+      <p class="article-excerpt" data-es>Después de lamininar el mismo modelo en los tres, esto es lo que importa: calidad de perfiles, velocidad, soportes y curva de aprendizaje.</p>
+      <div class="article-footer">
+        <span class="article-read" data-en>10 min read</span>
+        <span class="article-read" data-es>10 min lectura</span>
+        <a href="#" class="article-link" data-en>Read</a>
+        <a href="#" class="article-link" data-es>Leer</a>
+      </div>
+    </div>
+
+    <div class="article-card reveal">
+      <span class="article-tag tag-guide" data-en>Settings</span>
+      <span class="article-tag tag-guide" data-es>Configuración</span>
+      <h3 class="article-title" data-en>Print Speed vs Quality: Finding Your Sweet Spot</h3>
+      <h3 class="article-title" data-es>Velocidad vs Calidad: Encontrando tu Punto Óptimo</h3>
+      <p class="article-excerpt" data-en>Faster isn't always worse — if you tune the right settings. Layer height, acceleration, and jerk explained for real-world results.</p>
+      <p class="article-excerpt" data-es>Más rápido no siempre significa peor — si ajustas bien los parámetros. Altura de capa, aceleración y jerk explicados para resultados reales.</p>
+      <div class="article-footer">
+        <span class="article-read" data-en>7 min read</span>
+        <span class="article-read" data-es>7 min lectura</span>
+        <a href="#" class="article-link" data-en>Read</a>
+        <a href="#" class="article-link" data-es>Leer</a>
+      </div>
+    </div>
+
+    <div class="article-card reveal">
+      <span class="article-tag tag-review" data-en>Models</span>
+      <span class="article-tag tag-review" data-es>Modelos</span>
+      <h3 class="article-title" data-en>Where to Find Free 3D Models (Beyond Thingiverse)</h3>
+      <h3 class="article-title" data-es>Dónde Encontrar Modelos 3D Gratis (Más Allá de Thingiverse)</h3>
+      <p class="article-excerpt" data-en>Printables, Makerworld, Cults3D, MyMiniFactory — which ones have the best quality files and the most active communities.</p>
+      <p class="article-excerpt" data-es>Printables, Makerworld, Cults3D, MyMiniFactory — cuáles tienen los mejores archivos y las comunidades más activas.</p>
+      <div class="article-footer">
+        <span class="article-read" data-en>5 min read</span>
+        <span class="article-read" data-es>5 min lectura</span>
+        <a href="#" class="article-link" data-en>Read</a>
+        <a href="#" class="article-link" data-es>Leer</a>
+      </div>
+    </div>
+
+    <div class="article-card reveal">
+      <span class="article-tag tag-guide" data-en>Post-processing</span>
+      <span class="article-tag tag-guide" data-es>Post-proceso</span>
+      <h3 class="article-title" data-en>Sanding, Priming & Painting Your Prints Like a Pro</h3>
+      <h3 class="article-title" data-es>Lijar, Imprimar y Pintar tus Impresiones como Profesional</h3>
+      <p class="article-excerpt" data-en>The print is just the beginning. How to remove layer lines, prime for paint adhesion, and get a finish that doesn't look 3D printed.</p>
+      <p class="article-excerpt" data-es>La impresión es solo el comienzo. Cómo eliminar las líneas de capa, imprimar para buena adhesión, y lograr un acabado que no parezca impreso en 3D.</p>
+      <div class="article-footer">
+        <span class="article-read" data-en>9 min read</span>
+        <span class="article-read" data-es>9 min lectura</span>
+        <a href="#" class="article-link" data-en>Read</a>
+        <a href="#" class="article-link" data-es>Leer</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- GEAR -->
+<section id="gear" style="background: var(--surface); border-radius: var(--radius-lg); max-width: 100%; padding: clamp(3rem,6vw,5rem) clamp(1rem,4vw,3rem);">
+  <div style="max-width: 1100px; margin: 0 auto;">
+    <p class="section-label" data-en>Gear picks</p>
+    <p class="section-label" data-es>Equipo recomendado</p>
+    <h2 class="section-title reveal" data-en>The best gear, honestly tested</h2>
+    <h2 class="section-title reveal" data-es>El mejor equipo, probado honestamente</h2>
+    <p class="section-sub reveal" data-en>Affiliate links help keep the site free. We only list gear we'd buy ourselves.</p>
+    <p class="section-sub reveal" data-es>Los enlaces de afiliado ayudan a mantener el sitio gratuito. Solo listamos equipo que compraríamos nosotros mismos.</p>
+
+    <div class="gear-grid">
+
+      <div class="gear-card reveal">
+        <span class="gear-badge badge-best" data-en>Best overall</span>
+        <span class="gear-badge badge-best" data-es>Mejor general</span>
+        <div class="gear-name">Bambu Lab A1 Mini</div>
+        <div class="gear-price">~$299</div>
+        <p class="gear-desc" data-en>Fast, reliable, and beginner-friendly with automatic calibration. The printer most of us would recommend first.</p>
+        <p class="gear-desc" data-es>Rápida, confiable y amigable para principiantes con calibración automática. La impresora que más recomendaríamos primero.</p>
+        <a href="https://amzn.to/3dsos-a1mini" class="gear-btn" target="_blank" rel="noopener sponsored" data-en>View on Amazon →</a>
+        <a href="https://amzn.to/3dsos-a1mini" class="gear-btn" target="_blank" rel="noopener sponsored" data-es>Ver en Amazon →</a>
+      </div>
+
+      <div class="gear-card reveal">
+        <span class="gear-badge badge-budget" data-en>Best budget</span>
+        <span class="gear-badge badge-budget" data-es>Mejor económica</span>
+        <div class="gear-name">Creality Ender 3 V3 SE</div>
+        <div class="gear-price">~$139</div>
+        <p class="gear-desc" data-en>The classic entry-level choice, now with auto-leveling. A great first printer that won't break the bank.</p>
+        <p class="gear-desc" data-es>La clásica opción de entrada, ahora con nivelación automática. Una gran primera impresora sin romper el presupuesto.</p>
+        <a href="https://amzn.to/3dsos-ender3" class="gear-btn" target="_blank" rel="noopener sponsored" data-en>View on Amazon →</a>
+        <a href="https://amzn.to/3dsos-ender3" class="gear-btn" target="_blank" rel="noopener sponsored" data-es>Ver en Amazon →</a>
+      </div>
+
+      <div class="gear-card reveal">
+        <span class="gear-badge badge-pro" data-en>Pro pick</span>
+        <span class="gear-badge badge-pro" data-es>Opción pro</span>
+        <div class="gear-name">Bambu Lab X1 Carbon</div>
+        <div class="gear-price">~$1,199</div>
+        <p class="gear-desc" data-en>Multi-material, enclosed, fast. If you print daily and need reliability, this is the machine.</p>
+        <p class="gear-desc" data-es>Multi-material, cerrada, rápida. Si imprimes diariamente y necesitas confiabilidad, esta es la máquina.</p>
+        <a href="https://amzn.to/3dsos-x1c" class="gear-btn" target="_blank" rel="noopener sponsored" data-en>View on Amazon →</a>
+        <a href="https://amzn.to/3dsos-x1c" class="gear-btn" target="_blank" rel="noopener sponsored" data-es>Ver en Amazon →</a>
+      </div>
+
+      <div class="gear-card reveal">
+        <span class="gear-badge badge-best" data-en>Top filament</span>
+        <span class="gear-badge badge-best" data-es>Mejor filamento</span>
+        <div class="gear-name">Hatchbox PLA 1kg</div>
+        <div class="gear-price">~$22</div>
+        <p class="gear-desc" data-en>Consistent diameter, minimal stringing, reliable color. The filament we reach for when we need a print to just work.</p>
+        <p class="gear-desc" data-es>Diámetro consistente, stringing mínimo, color confiable. El filamento al que recurrimos cuando necesitamos que la impresión simplemente funcione.</p>
+        <a href="https://amzn.to/3dsos-hatchbox" class="gear-btn" target="_blank" rel="noopener sponsored" data-en>View on Amazon →</a>
+        <a href="https://amzn.to/3dsos-hatchbox" class="gear-btn" target="_blank" rel="noopener sponsored" data-es>Ver en Amazon →</a>
+      </div>
+
+      <div class="gear-card reveal">
+        <span class="gear-badge badge-budget" data-en>Must-have tool</span>
+        <span class="gear-badge badge-budget" data-es>Herramienta esencial</span>
+        <div class="gear-name">Creality Sonic Pad</div>
+        <div class="gear-price">~$79</div>
+        <p class="gear-desc" data-en>Adds Klipper to almost any printer. Input shaping, pressure advance, and a touchscreen. Game changer for older machines.</p>
+        <p class="gear-desc" data-es>Agrega Klipper a casi cualquier impresora. Input shaping, pressure advance y pantalla táctil. Transforma impresoras antiguas.</p>
+        <a href="https://amzn.to/3dsos-sonicpad" class="gear-btn" target="_blank" rel="noopener sponsored" data-en>View on Amazon →</a>
+        <a href="https://amzn.to/3dsos-sonicpad" class="gear-btn" target="_blank" rel="noopener sponsored" data-es>Ver en Amazon →</a>
+      </div>
+
+      <div class="gear-card reveal">
+        <span class="gear-badge badge-pro" data-en>Resin pick</span>
+        <span class="gear-badge badge-pro" data-es>Opción resina</span>
+        <div class="gear-name">Elegoo Saturn 4 Ultra</div>
+        <div class="gear-price">~$429</div>
+        <p class="gear-desc" data-en>Large format resin printing with 12K resolution. For miniatures and detailed parts where FDM just can't compete.</p>
+        <p class="gear-desc" data-es>Impresión de resina en formato grande con resolución 12K. Para miniaturas y piezas detalladas donde FDM no puede competir.</p>
+        <a href="https://amzn.to/3dsos-saturn4" class="gear-btn" target="_blank" rel="noopener sponsored" data-en>View on Amazon →</a>
+        <a href="https://amzn.to/3dsos-saturn4" class="gear-btn" target="_blank" rel="noopener sponsored" data-es>Ver en Amazon →</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- TROUBLESHOOTING -->
+<section id="fixes">
+  <p class="section-label" data-en>Troubleshooting</p>
+  <p class="section-label" data-es>Solución de problemas</p>
+  <h2 class="section-title reveal" data-en>Common problems, fast fixes</h2>
+  <h2 class="section-title reveal" data-es>Problemas comunes, soluciones rápidas</h2>
+  <p class="section-sub reveal" data-en>The 8 issues that cause 90% of failed prints — and exactly what to do about each one.</p>
+  <p class="section-sub reveal" data-es>Los 8 problemas que causan el 90% de los fallos — y exactamente qué hacer con cada uno.</p>
+
+  <div class="trouble-grid">
+
+    <div class="trouble-card reveal">
+      <div class="trouble-icon">🏋️</div>
+      <div>
+        <div class="trouble-title" data-en>Warping / corners lifting</div>
+        <div class="trouble-title" data-es>Warping / esquinas levantadas</div>
+        <p class="trouble-desc" data-en>Print lifts off the bed mid-print, ruining adhesion from corner to center.</p>
+        <p class="trouble-desc" data-es>La impresión se levanta de la cama, arruinando la adhesión.</p>
+        <p class="trouble-fix" data-en>→ Increase bed temp, add brim, clean bed with IPA</p>
+        <p class="trouble-fix" data-es>→ Sube temp de cama, agrega brim, limpia con IPA</p>
+      </div>
+    </div>
+
+    <div class="trouble-card reveal">
+      <div class="trouble-icon">🕸️</div>
+      <div>
+        <div class="trouble-title" data-en>Stringing / cobwebs</div>
+        <div class="trouble-title" data-es>Stringing / telarañas</div>
+        <p class="trouble-desc" data-en>Thin strings of plastic between parts of your print when the nozzle travels.</p>
+        <p class="trouble-desc" data-es>Hilos delgados de plástico entre partes de la impresión al desplazarse el nozzle.</p>
+        <p class="trouble-fix" data-en>→ Lower temp 5°C, increase retraction, dry your filament</p>
+        <p class="trouble-fix" data-es>→ Baja temp 5°C, aumenta retracción, seca el filamento</p>
+      </div>
+    </div>
+
+    <div class="trouble-card reveal">
+      <div class="trouble-icon">🕳️</div>
+      <div>
+        <div class="trouble-title" data-en>Under-extrusion / gaps</div>
+        <div class="trouble-title" data-es>Bajo extrusión / huecos</div>
+        <p class="trouble-desc" data-en>Walls have gaps, infill is weak, layers don't bond properly.</p>
+        <p class="trouble-desc" data-es>Las paredes tienen huecos, el relleno es débil, las capas no se unen.</p>
+        <p class="trouble-fix" data-en>→ Check extruder steps, increase flow 5%, unclog nozzle</p>
+        <p class="trouble-fix" data-es>→ Revisa pasos del extrusor, sube flujo 5%, desatasca nozzle</p>
+      </div>
+    </div>
+
+    <div class="trouble-card reveal">
+      <div class="trouble-icon">🏔️</div>
+      <div>
+        <div class="trouble-title" data-en>Layer shifting</div>
+        <div class="trouble-title" data-es>Desplazamiento de capas</div>
+        <p class="trouble-desc" data-en>Layers are offset horizontally, the print looks like it slid sideways.</p>
+        <p class="trouble-desc" data-es>Las capas están desplazadas horizontalmente, la impresión parece deslizada.</p>
+        <p class="trouble-fix" data-en>→ Tighten belts, reduce print speed, check stepper drivers</p>
+        <p class="trouble-fix" data-es>→ Tensiona correas, reduce velocidad, revisa drivers de motores</p>
+      </div>
+    </div>
+
+    <div class="trouble-card reveal">
+      <div class="trouble-icon">🌊</div>
+      <div>
+        <div class="trouble-title" data-en>Ghosting / ringing</div>
+        <div class="trouble-title" data-es>Ghosting / vibración</div>
+        <p class="trouble-desc" data-en>Wavy artifacts appear after sharp corners or walls, especially on curves.</p>
+        <p class="trouble-desc" data-es>Aparecen ondas después de esquinas o paredes, especialmente en curvas.</p>
+        <p class="trouble-fix" data-en>→ Reduce speed, tighten frame, enable input shaping if using Klipper</p>
+        <p class="trouble-fix" data-es>→ Reduce velocidad, aprieta el frame, activa input shaping en Klipper</p>
+      </div>
+    </div>
+
+    <div class="trouble-card reveal">
+      <div class="trouble-icon">🪣</div>
+      <div>
+        <div class="trouble-title" data-en>Clogged nozzle</div>
+        <div class="trouble-title" data-es>Nozzle obstruido</div>
+        <p class="trouble-desc" data-en>Filament stops extruding mid-print or comes out mangled and inconsistent.</p>
+        <p class="trouble-desc" data-es>El filamento deja de extruir o sale deformado e inconsistente.</p>
+        <p class="trouble-fix" data-en>→ Cold pull technique, or replace the nozzle ($2 fix)</p>
+        <p class="trouble-fix" data-es>→ Técnica cold pull, o reemplaza el nozzle (solución de $2)</p>
+      </div>
+    </div>
+
+    <div class="trouble-card reveal">
+      <div class="trouble-icon">🫧</div>
+      <div>
+        <div class="trouble-title" data-en>Bubbling / popping sounds</div>
+        <div class="trouble-title" data-es>Burbujas / sonidos de chasquido</div>
+        <p class="trouble-desc" data-en>Filament makes popping sounds and extrudes with bubbles or inconsistently.</p>
+        <p class="trouble-desc" data-es>El filamento hace sonidos de chasquido y extruye con burbujas.</p>
+        <p class="trouble-fix" data-en>→ Dry your filament. Seriously. Use a food dehydrator at 45°C for 4h</p>
+        <p class="trouble-fix" data-es>→ Seca tu filamento. En serio. Usa un deshidratador a 45°C por 4h</p>
+      </div>
+    </div>
+
+    <div class="trouble-card reveal">
+      <div class="trouble-icon">🧱</div>
+      <div>
+        <div class="trouble-title" data-en>Poor bridging</div>
+        <div class="trouble-title" data-es>Puentes deficientes</div>
+        <p class="trouble-desc" data-en>Horizontal spans sag or fail entirely, leaving droopy lines mid-air.</p>
+        <p class="trouble-desc" data-es>Los puentes horizontales se hunden o fallan, dejando líneas caídas en el aire.</p>
+        <p class="trouble-fix" data-en>→ Increase fan speed to 100%, slow bridge speed to 20mm/s</p>
+        <p class="trouble-fix" data-es>→ Sube ventilador a 100%, reduce velocidad de puente a 20mm/s</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<section>
+  <div class="newsletter-wrap reveal">
+    <p class="section-label" data-en>Stay in the loop</p>
+    <p class="section-label" data-es>Mantente al día</p>
+    <h2 class="newsletter-title" data-en>New guides, every week</h2>
+    <h2 class="newsletter-title" data-es>Nuevas guías, cada semana</h2>
+    <p class="newsletter-sub" data-en>No spam. Just useful 3D printing content — new tutorials, gear deals, and community picks.</p>
+    <p class="newsletter-sub" data-es>Sin spam. Solo contenido útil de impresión 3D — tutoriales nuevos, ofertas de equipo y selecciones de la comunidad.</p>
+    <form class="newsletter-form" onsubmit="handleSubscribe(event)">
+      <input type="email" id="emailInput" placeholder="your@email.com" required />
+      <button type="submit" class="btn-primary" data-en>Subscribe free</button>
+      <button type="submit" class="btn-primary" data-es>Suscribirse gratis</button>
+    </form>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">3D<span>SOS</span></div>
+  <div class="footer-links">
+    <a href="#guides" data-en>Guides</a>
+    <a href="#guides" data-es>Guías</a>
+    <a href="#gear" data-en>Gear</a>
+    <a href="#gear" data-es>Equipo</a>
+    <a href="#fixes" data-en>Fixes</a>
+    <a href="#fixes" data-es>Soluciones</a>
+  </div>
+  <p class="footer-disclaimer" data-en>3DSOS participates in the Amazon Associates Program and other affiliate programs. We earn a small commission on qualifying purchases at no extra cost to you. All recommendations are our own.</p>
+  <p class="footer-disclaimer" data-es>3DSOS participa en el Programa de Afiliados de Amazon y otros programas de afiliados. Ganamos una pequeña comisión en compras calificadas sin costo adicional para ti. Todas las recomendaciones son propias.</p>
+</footer>
+
+<script>
+  // ── LANGUAGE TOGGLE ──
+  function toggleLang() {
+    const body = document.body;
+    const btn = document.getElementById('langBtn');
+    if (body.classList.contains('lang-en')) {
+      body.classList.replace('lang-en', 'lang-es');
+      btn.textContent = 'EN';
+    } else {
+      body.classList.replace('lang-es', 'lang-en');
+      btn.textContent = 'ES';
+    }
+  }
+
+  // ── SCROLL REVEAL ──
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // ── NEWSLETTER ──
+  function handleSubscribe(e) {
+    e.preventDefault();
+    const input = document.getElementById('emailInput');
+    const btn = e.submitter;
+    const orig = btn.textContent;
+    btn.textContent = '✓ Done!';
+    btn.style.background = '#0070F3';
+    input.value = '';
+    setTimeout(() => { btn.textContent = orig; btn.style.background = ''; }, 3000);
+  }
+</script>
+
+</body>
+</html>
